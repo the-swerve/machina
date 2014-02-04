@@ -3,14 +3,10 @@
   "repo": "the-swerve/machina",
   "description": "State machines in the DOM.",
   "version": "0.0.1",
-  "keywords": [ "state", "weird" ],
-  "dependencies": {
-		"component/event": "0.1.2"
-	},
+  "keywords": ["state", "weird"],
+  "dependencies": {"component/event": "0.1.2"},
   "development": {},
   "license": "MIT",
   "main": "index.js",
-  "scripts": [
-    "index.js"
-  ]
+  "scripts": ["index.js"]
 }
