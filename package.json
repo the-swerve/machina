@@ -4,33 +4,20 @@
   "description": "State machines in the DOM",
   "main": "index.js",
   "dependencies": {
-		"query-component": "0.0.1",
-		"event-component": "0.1.0"
-	},
+    "query-component": "0.0.1",
+    "event-component": "0.1.0"
+  },
   "devDependencies": {
     "mocha": "1.17.1",
-		"domify": "1.1.1"
+    "domify": "1.1.1",
+		"zuul": "1.5.2"
   },
-	"testling": {
-		"files": "test/index.js",
-		"browsers": [
-			"ie6", "ie7", "ie8", "ie9", "ie10",
-			"chrome30", "chrome31", "chrome30",
-			"firefox25", "firefox24", "firefox23"
-			"opera17", "opera16",
-			"safari/5.1", "safari6",
-			"iphone/6.0",
-			"android-browser/4.2"
-		],
-		"harness": "mocha",
-		"files": "test/index.js"
-	},
   "repository": {
     "type": "git",
     "url": "https://github.com/the-swerve/machina.git"
   },
   "scripts": {
-		"test": "zuul -- test/index.js"
+    "test": "zuul -- test/index.js"
   },
   "keywords": [ "template", "render", "reactive"],
   "author": "jay r bolton <jayrbolton@gmail.com> (http://jayrbolton.com/)",
