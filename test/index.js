@@ -30,17 +30,12 @@ describe('machina', function() {
 	})
 
 	it ('should exit a state and remove attrs on an event', function() {
-		var wrapper = domify("<div mm-class='lol:clicked'></div>")
-		var enter = domify("<a mm-enter='click:lol'></a>")
-		var exit = domify("<a mm-exit='click:lol'></a>")
-		wrapper.appendChild(enter)
-		wrapper.appendChild(exit)
-		machina.init(wrapper)
-
-		enter.click()
-		assert.equal(wrapper.getAttribute('class'), 'clicked')
-		exit.click()
-		assert.equal(wrapper.getAttribute('class'), null)
+		var el = domify("<div mm-class='lol:clicked'><p mm-enter='click:lol'></p><p mm-exit='click:lol'></p></div>")
+		machina.init(el)
+		el.firstChild.click()
+		assert.equal(el.getAttribute('class'), 'clicked')
+		el.lastChild.click()
+		assert.equal(el.getAttribute('class'), null)
 	})
 
 	it ('should exit a state when exit called', function() {

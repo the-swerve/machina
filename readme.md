@@ -8,6 +8,8 @@ Finally, you can use callbacks to hook into your state transitions in the js lay
 
 It is best used in combination with a templating library, a data model library, and any other components.
 
+Works with IE6+. Click the build badge above for proof.
+
 # installation
 
 with component
