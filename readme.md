@@ -8,7 +8,7 @@ Finally, you can use callbacks to hook into your state transitions in the js lay
 
 It is best used in combination with a templating library, a data model library, and any other components.
 
-Works with IE6+. Click the build badge above for proof.
+Works with IE6+.
 
 # installation
 
@@ -16,11 +16,6 @@ with component
 
 ```sh
 component install machina
-```
-with npm and browserify
-
-```sh
-npm install machina-component
 ```
 
 # usage
