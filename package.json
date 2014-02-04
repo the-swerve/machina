@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "description": "State machines in the DOM",
   "main": "index.js",
-  "dependencies": {
-    "event-component": "0.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "1.17.1",
     "domify": "1.1.1",

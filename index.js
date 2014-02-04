@@ -1,10 +1,4 @@
-// Require from either component or node
-var event;
-try {
-	event = require('event')
-} catch(err) {
-	event = require('event-component')
-}
+var event = require('event')
 
 var config = { prefix: 'mm-' }
 

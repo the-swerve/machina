@@ -4,7 +4,7 @@
   "description": "State machines in the DOM.",
   "version": "0.0.1",
   "keywords": [ "state", "weird" ],
-  "dependencies": { "component/event": "1.0.5" },
+  "dependencies": {},
   "development": {},
   "license": "MIT",
   "main": "index.js",

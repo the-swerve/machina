@@ -1,4 +1,4 @@
-# machina [![Build Status](https://travis-ci.org/the-swerve/machina.png?branch=master)](https://travis-ci.org/the-swerve/machina)
+# machina
 
 machina is a tiny lil lib that allows you to abstract procedural UI into a declarative state machine in the DOM.
 
