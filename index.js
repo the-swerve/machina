@@ -1,5 +1,10 @@
-var query = require('query-component')
-var event = require('event-component')
+// Require from either component or node
+var event;
+try {
+	event = require('event')
+} catch(err) {
+	event = require('event-component')
+}
 
 var config = { prefix: 'mm-' }
 

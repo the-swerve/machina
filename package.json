@@ -4,7 +4,6 @@
   "description": "State machines in the DOM",
   "main": "index.js",
   "dependencies": {
-    "query-component": "0.0.1",
     "event-component": "0.1.0"
   },
   "devDependencies": {
