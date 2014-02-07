@@ -1,12 +1,12 @@
 var event = require('event')
 
-var config = { prefix: 'mm-' }
+var config = { prefix: 'data-state-' }
 
 var states = {}
 
 // Access a state
 var machina = function(state) {
-	return states[state]
+	return get_state(state)
 }
 
 machina.config = function(settings) {
@@ -28,13 +28,12 @@ var State = function() {
 	return this
 }
 
-State.prototype.onenter = function(f) {
-	this._on_enter = f
-	return this
-}
-
-State.prototype.onexit = function(f) {
-	this._on_exit = f
+State.prototype.on = function(transition, fn) {
+	if(transition === 'enter') {
+		this._on_enter = fn
+	} else if (transition == 'exit') {
+		this._on_exit = fn
+	}
 	return this
 }
 
@@ -56,7 +55,6 @@ State.prototype.exit = function(ev) {
 	return this
 }
 
-// When the state
 State.prototype.bind_attr = function(node, name, value) {
 	this._attrs.push({
 		node: node,
@@ -69,9 +67,7 @@ State.prototype.bind_attr = function(node, name, value) {
 // Functional utils
 
 var init = function(states, el) {
-	init_enters(states, el)
-	init_exits(states, el)
-	init_attrs(states, el)
+	find_attrs(states, el)
 }
 
 var init_exits = function(states, el) {
@@ -93,45 +89,36 @@ var traverse_dom_attrs = function(el, fn) {
 	}
 }
 
-var init_enters = function(states, el) {
-	traverse_dom_attrs(el, function(attr, node) {
-		if (attr.name.indexOf(config.prefix + 'enter') === 0) {
-			var val = parse_attr_val(attr.value)
-			var action = val[0]
-			var name = val[1]
-			if (!states[name]) states[name] = new State(name)
-			var state = states[name]
-			var fn = function() { state.enter.call(state) }
-			event.bind(node, action, fn)
-			node.removeAttribute(attr.name)
-		}
-	})
+var get_state = function(name) {
+	var state = states[name]
+	if (!state)
+		states[name] = state = new State(name)
+	return state
 }
 
-var init_exits = function(states, el) {
-	traverse_dom_attrs(el, function(attr, node) {
-		if (attr.name.indexOf(config.prefix + 'exit') === 0) {
-			var val = parse_attr_val(attr.value)
-			var action = val[0]
-			var name = val[1]
-			var state = states[name]
-			if (state) {
-				var fn = function() { state.exit.call(state) }
-				event.bind(node, action, fn)
-			}
-			node.removeAttribute(attr.name)
-		}
-	})
-}
-
-var init_attrs = function(states, el) {
+var find_attrs = function(states, el) {
 	traverse_dom_attrs(el, function(attr, node) {
 		if (attr.name.indexOf(config.prefix) === 0) {
-			var name_parsed = parse_attr_name(attr.name)
-			var parsed = parse_attr_val(attr.value)
-			var state = parsed[0]
-			var value = parsed[1]
-			if (states[state]) states[state].bind_attr(node, name_parsed, value)
+			var val = parse_attr_val(attr.value)
+			var ev, state_name, state
+			if (attr.name.indexOf(config.prefix + 'enter') === 0) {
+				ev = val[0], state_name = val[1]
+				state = get_state(state_name)
+				var fn = function() { state.enter.call(state) }
+				event.bind(node, ev, fn)
+				node.removeAttribute(attr.name)
+			} else if (attr.name.indexOf(config.prefix + 'exit') === 0) {
+				ev = val[0], state_name = val[1]
+				state = get_state(state_name)
+				var fn = function() { state.exit.call(state) }
+				event.bind(node, ev, fn)
+				node.removeAttribute(attr.name)
+			} else {
+				var attr_name = parse_attr_name(attr.name)
+				state_name = val[0], val = val[1]
+				state = get_state(state_name)
+				state.bind_attr(node, attr_name, val)
+			}
 		}
 	})
 }

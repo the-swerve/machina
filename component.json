@@ -1,12 +1,19 @@
 {
   "name": "machina",
   "repo": "the-swerve/machina",
-  "description": "State machines in the DOM.",
-  "version": "0.0.1",
-  "keywords": ["state", "weird"],
-  "dependencies": {"component/event": "0.1.2"},
-  "development": {},
+  "description": "Abstract UI procedures with a DOM-based state machine",
+  "version": "0.2.0",
+  "keywords": ["ui", "state", "weird", "machine"],
+  "dependencies": {
+		"component/event": "0.1.2"
+	},
+  "development": {
+		"component/assert": "0.3.0",
+		"component/domify": "1.2.1"
+	},
   "license": "MIT",
   "main": "index.js",
-  "scripts": ["index.js"]
+  "scripts": [
+		"index.js"
+	]
 }

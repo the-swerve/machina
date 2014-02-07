@@ -1,6 +1,6 @@
 # machina
 
-machina is a tiny lil lib that allows you to abstract procedural UI into a declarative state machine in the DOM.
+machina is a minimal lib that allows you to abstract procedural UI into a declarative state machine in the DOM.
 
 You can declare what events in the DOM cause either a new state or an exit from an existing state, and you can declare what attributes certain elements will have on certain states.
 
@@ -20,52 +20,72 @@ component install machina
 
 # usage
 
-Declare that an event enters a state using `mm-enter='event:state'`.
+Declare that an event enters a state using `data-state-enter='event:state'`
 
 ```html
-<a mm-enter='click:creating-user'>New User</a>
+<a data-state-enter='click:creating-user'>New User</a>
 ```
 
-We use the `mm-` prefix for machina attributes, which can be customized (see 'config') to anything else. `mm-enter` indicates that we want to enter a new state on an action. In the attribute, separate the action from the state with a colon.
+By default, We use the `data-state-` prefix for machina attributes, which can be customized (see 'config') to anything else.
 
-We can then define elements that have certain attributes based on their state using `mm-{attr}="state:value"`.
+`data-state-enter` indicates that we want to enter a new state on an event. In the attribute, separate the event from the state with a colon.
+
+`data-state-exit` indicates that we want to exit a state on an event.
+
+We can define elements that have certain attributes based on their state using `data-state-{attr}='state:value'`.
 
 ```html
-<a mm-enter='click:creating-user'>New User</a>
+<a data-state-enter='click:creating-user'>New User</a>
 
-<form mm-class='creating-user:show'>
-	<a mm-exit='click:creating-user'>Close</a>
+<form data-state-class='creating-user:show'>
+	<a data-state-exit='click:creating-user'>Close</a>
 	... <!-- a bunch of fields -->
-	<input type='submit' mm-enter='click:saving-user' mm-class='saving-user:disabled' />
-	<p mm-class='saving-user:show'>Saving...</p>
+	<input type='submit' data-state-enter='click:saving-user' data-state-class='saving-user:disabled' />
+	<p data-state-class='saving-user:show'>Saving...</p>
 </form>
 ```
 
-In the above example, the `New User` button will show the new user form when clicked; the close button will hide the new user form; and the submit button will transition to the `saving-user` state, disabling itself, and showing the "Saving..." text, which could be an animation. All of this procedure happens entirely through declarations in the dom without any js code.
+In the above example, the `New User` button will show the new user form when
+clicked; the close button will hide the new user form; and the submit button
+will transition to the `saving-user` state, disabling itself, and showing the
+"Saving..." text, which could be an animation. All of this procedure happens
+entirely through declarations in the dom without any js code.
+
+#### machina(state_name)
 
 In our javascript, we can hook into these state transitions.
 
 ```js
 var machina = require('machina');
 
-var new_user_state = machina('creating-user'); // access the 'creating-user' state
+var creating_user = machina('creating-user'); // access the 'creating-user' state
+```
 
-new_user_state.on_enter(function(e) {
+`machina(state)` returns a state object, which will have been already automatically instantiate once the dom loaded.
+
+#### state.on('enter', fn), state.on('exit', fn)
+
+You can define functions that run when the state enters or exits.
+
+```js
+creating_user.on('enter', function(e) {
 	// e is the event, which may or may not be defined
 	console.log('the form is about to show');
 });
 
-new_user_state.on_exit(function(e) {
+creating_user.on('exit', function(e) {
 	console.log('the form is about to hide');
 });
 
 ```
 
-We can also initiate the state transitions in js:
+#### state.enter(), state.exit()
+
+We can initiate state transitions manually in the js
 
 ```js
-new_user_state.enter();
-new_user_state.exit();
+creating_user.enter();
+creating_user.exit();
 
 // or:
 
@@ -77,5 +97,5 @@ machina('creating-user').exit();
 
 ```js
 machina.config({
-	prefix: '--', // your custom machina attribute prefix
+	prefix: 'data-state-' // your custom machina attribute prefix
 });

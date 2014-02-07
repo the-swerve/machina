@@ -1,55 +1,67 @@
 var assert = require('assert')
 var domify = require('domify')
-
-var machina = require('../')
+var machina = require('machina')
 
 describe('machina', function() {
 
-	it ('returns undefined without any machina', function() {
-		assert.equal(machina('lol'), undefined)
+	it ('should initialize states based on enters in the dom', function() {
+		var el = domify("<div><p data-state-enter='click:a'></p></div>")
+		machina.init(el)
+		assert(machina('a') !== undefined)
 	})
 
-	it ('should initialize states based on enters in the dom', function() {
-		var el = domify("<div><p mm-enter='click:lol'></p></div>")
+	it ('should initialize states based on attrs in the dom', function() {
+		var el = domify("<div><p data-state-enter='click:b'></p></div>")
 		machina.init(el)
-		assert.notEqual(machina('lol'), undefined)
+		assert(machina('b') !== undefined)
+	})
+
+	it ('should initialize states based on exits in the dom', function() {
+		var el = domify("<div><p data-state-exit='b:c'></p></div>")
+		machina.init(el)
+		assert(machina('c') !== undefined)
+	})
+
+	it ('should initialize states when it is called in js', function() {
+		machina('d')
+		assert(machina('d') !== undefined)
 	})
 
 	it ('should enter a state and set attrs on an event', function() {
-		var el = domify("<div mm-class='lol:clicked'><p mm-enter='click:lol'></p></div>")
+		var el = domify("<div data-state-class='lol:clicked'><p data-state-enter='click:lol'></p></div>")
 		machina.init(el)
 		el.firstChild.click()
-		assert.equal(el.getAttribute('class'), 'clicked')
+		assert(el.getAttribute('class') === 'clicked')
 	})
 
 	it ('should enter a state when enter called', function() {
-		var el = domify("<div mm-class='lol:clicked'><p mm-enter='click:lol'></p></div>")
+		var el = domify("<div data-state-class='lol:clicked'><p data-state-enter='click:lol'></p></div>")
 		machina.init(el)
 		machina('lol').enter()
-		assert.equal(el.getAttribute('class'), 'clicked')
+		assert(el.getAttribute('class') === 'clicked')
 	})
 
 	it ('should exit a state and remove attrs on an event', function() {
-		var el = domify("<div mm-class='lol:clicked'><p mm-enter='click:lol'></p><p mm-exit='click:lol'></p></div>")
+		var el = domify("<div data-state-class='lol:clicked'><p data-state-enter='click:lol'></p><p data-state-exit='click:lol'></p></div>")
 		machina.init(el)
 		el.firstChild.click()
-		assert.equal(el.getAttribute('class'), 'clicked')
+		assert(el.getAttribute('class') === 'clicked')
 		el.lastChild.click()
-		assert.equal(el.getAttribute('class'), null)
+		assert(el.getAttribute('class') === null)
 	})
 
 	it ('should exit a state when exit called', function() {
-		var wrapper = domify("<div mm-class='lol:clicked'></div>")
-		var enter = domify("<a mm-enter='click:lol'></a>")
-		var exit = domify("<a mm-exit='click:lol'></a>")
+		var wrapper = domify("<div data-state-class='lol:clicked'></div>")
+		var enter = domify("<a data-state-enter='click:lol'></a>")
+		var exit = domify("<a data-state-exit='click:lol'></a>")
 		wrapper.appendChild(enter)
 		wrapper.appendChild(exit)
 		machina.init(wrapper)
 
 		machina('lol').enter()
-		assert.equal(wrapper.getAttribute('class'), 'clicked')
+		assert(wrapper.getAttribute('class') === 'clicked')
 		machina('lol').exit()
-		assert.equal(wrapper.getAttribute('class'), null)
+		assert(wrapper.getAttribute('class') === null)
 	})
 
 	it ('runs the callbacks', function() {
@@ -57,18 +69,18 @@ describe('machina', function() {
 		var el = domify("<div><p --enter='click:lol'></p></div>")
 		machina.init(el)
 		var x = 0
-		machina('lol').onenter(function(e) { ++x })
+		machina('lol').on('enter', function(e) { ++x })
 		machina('lol').enter()
-		machina('lol').onexit(function(e) { ++x })
+		machina('lol').on('exit', function(e) { ++x })
 		machina('lol').exit()
-		assert.equal(x, 2)
+		assert(x === 2)
 	})
 
 	it ('can change the prefix with config', function() {
-		machina.config({prefix: 'data-machina-'})
-		var el = domify("<div><p data-machina-enter='click:lol'></p></div>")
+		machina.config({prefix: 'mm-'})
+		var el = domify("<div><p mm-enter='click:x'></p></div>")
 		machina.init(el)
-		assert.notEqual(machina('lol'), undefined)
+		assert(machina('x') !== undefined)
 	})
 
 })
